@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.students.mapper.ScoreMapper">
+    <resultMap id="scoreResultMap" type="com.example.students.domain.Score">
+        <id property="scId" column="sc_id"/>
+        <result property="chinese" column="chinese"/>
+        <result property="math" column="math"/>
+        <result property="english" column="english"/>
+        <association property="student" column="s_id">
+            <result property="sId" column="s_id"/>
+            <result property="sNumber" column="s_number"/>
+            <result property="sName" column="s_name"/>
+            <result property="sex" column="sex"/>
+            <result property="birthday" column="birthday"/>
+            <result property="address" column="address"/>
+            <result property="phone" column="phone"/>
+            <result property="sState" column="s_state"/>
+            <result property="sCreator" column="s_creator"/>
+            <result property="sCreation" column="s_creation"/>
+            <result property="sOperator" column="s_operator"/>
+            <result property="sOperation" column="s_operation"/>
+            <association property="classes" column="c_id">
+                <result property="cId" column="c_id"/>
+                <result property="cNumber" column="c_number"/>
+                <result property="cName" column="c_name"/>
+                <result property="cState" column="c_state"/>
+                <result property="cCreator" column="c_creator"/>
+                <result property="cCreation" column="c_creation"/>
+                <result property="cOperator" column="c_operator"/>
+                <result property="cOperation" column="c_operation"/>
+            </association>
+        </association>
+    </resultMap>
+    <resultMap id="scoreDTOResultMap" type="com.example.students.dto.ScoreDTO">
+        <result property="studentName" column="s_name"/>
+        <result property="classesName" column="c_name"/>
+        <result property="chinese" column="chinese"/>
+        <result property="math" column="math"/>
+        <result property="english" column="english"/>
+    </resultMap>
+    <select id="findStudentScore" resultMap="scoreResultMap">
+        select sc_id, chinese, math, english, s_id
+        from score
+        where s_id = #{studentId}
+    </select>
+    <select id="findAvgChinese" resultType="java.lang.Double">
+        select avg(chinese)
+        from score
+        where s_id in (select student.s_id from student where c_id = #{classId})
+    </select>
+    <select id="findAvgMath" resultType="java.lang.Double">
+        select avg(math)
+        from score
+        where s_id in (select student.s_id from student where c_id = #{classId})
+    </select>
+    <select id="findAvgEnglish" resultType="java.lang.Double">
+        select avg(english)
+        from score
+        where s_id in (select student.s_id from student where c_id = #{classId})
+    </select>
+    <select id="findAvgSumScore" resultType="java.lang.Double">
+        select sum(chinese) + sum(math) +
+               sum(english) / (select count(student.s_id) from student where c_id = #{classId})
+        from score
+        where s_id in (select student.s_id from student where c_id = #{classId})
+    </select>
+    <select id="findByScoreCondition" parameterType="com.example.students.form.ScoreCondition"
+            resultMap="scoreDTOResultMap">
+        select s.s_name, c.c_name, sc.chinese, sc.math, sc.english
+        from student s
+                 inner join classes c on s.c_id = c.c_id
+                 inner join score sc on sc.s_id = s.s_id
+        <where>
+            <if test="sName!=null">
+                or s.s_name = #{sName}
+            </if>
+            <if test="cName!=null">
+                or c.c_name = #{cName}
+            </if>
+            <if test="avgMax!=null and avgMin!=null">
+                or (sc.chinese+sc.math+sc.english)/3 between #{avgMax} and #{avgMin}
+            </if>
+        </where>
+    </select>
+</mapper>

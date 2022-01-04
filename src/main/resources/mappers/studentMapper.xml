@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.students.mapper.StudentMapper">
+    <resultMap id="studentResultMap" type="com.example.students.domain.Student">
+        <id property="sId" column="s_id"/>
+        <result property="sNumber" column="s_number"/>
+        <result property="sName" column="s_name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+        <result property="phone" column="phone"/>
+        <result property="sState" column="s_state"/>
+        <result property="sCreator" column="s_creator"/>
+        <result property="sCreation" column="s_creation"/>
+        <result property="sOperator" column="s_operator"/>
+        <result property="sOperation" column="s_operation"/>
+        <association property="classes" column="c_id">
+            <result property="cId" column="c_id"/>
+            <result property="cNumber" column="c_number"/>
+            <result property="cName" column="c_name"/>
+            <result property="cState" column="c_state"/>
+            <result property="cCreator" column="c_creator"/>
+            <result property="cCreation" column="c_creation"/>
+            <result property="cOperator" column="c_operator"/>
+            <result property="cOperation" column="c_operation"/>
+        </association>
+    </resultMap>
+    <select id="findStudentId" resultMap="studentResultMap">
+        select s_id, s_number, s_name, sex, birthday, address, phone,
+               c_id, s_state, s_creator, s_creation, s_operator, s_operation
+        from student where s_number=#{studentNumber} and s_name=#{studentName}
+    </select>
+    <select id="findStudent" resultMap="studentResultMap">
+        select s_id, s_name from student where c_id=#{classesId}
+    </select>
+</mapper>

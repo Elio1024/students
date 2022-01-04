@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student</title>
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <style type="text/css">
+        table
+        {
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
+        }
+        table td, table th
+        {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+        }
+        table thead th
+        {
+            background-color: #CCE8EB;
+            width: 100px;
+        }
+        table tr:nth-child(odd)
+        {
+            background: #fff;
+        }
+        table tr:nth-child(even)
+        {
+            background: #F5FAFA;
+        }
+    </style>
+</head>
+<body>
+<form id="student" >
+    <div style="text-align:center;vertical-align:middel;">
+        学生编号<br>
+        <input id="studentNumber" name="studentNumber"/><br>
+        学生名字<br>
+        <input id="studentName" name="studentName"/><br>
+        <input id="btn_submit" type="button" value="查询学生信息"/>
+    </div>
+</form>
+<table >
+    <tr>
+        <td>学生编号</td>
+        <td>姓名</td>
+        <td>班级</td>
+        <td>住址</td>
+        <td>生日</td>
+        <td>语文</td>
+        <td>数学</td>
+        <td>英语</td>
+        <td>总成绩</td>
+        <td>平均成绩</td>
+    </tr>
+    <tr>
+        <td id="tdStudentNumber"></td>
+        <td id="tdStudentName"></td>
+        <td id="tdClass"></td>
+        <td id="tdAddress"></td>
+        <td id="tdBirthday"></td>
+        <td id="tdChinese"></td>
+        <td id="tdMath"></td>
+        <td id="tdEnglish"></td>
+        <td id="tdSumScore"></td>
+        <td id="tdAvgScore"></td>
+    </tr>
+</table>
+</body>
+<script>
+    $(document).ready(function () {
+        $("#btn_submit").click(function () {
+            let studentNumber = $('#studentNumber').val();
+            let studentName = $('#studentName').val();
+            let url = 'http://localhost:8080/student?studentNumber=' + studentNumber + '&studentName=' + studentName;
+            let result = $.ajax({
+                url: url, async: false
+            });
+            let student = JSON.parse(result.responseText);
+            $("#tdStudentNumber").html(student.snumber);
+            $("#tdStudentName").html(student.sname);
+            $("#tdClass").html(student.classes);
+            $("#tdAddress").html(student.address);
+            $("#tdBirthday").html(student.birthday);
+            $("#tdChinese").html(student.chinese);
+            $("#tdMath").html(student.math);
+            $("#tdEnglish").html(student.english);
+            $("#tdSumScore").html(student.sumScore);
+            $("#tdAvgScore").html(student.avgScore);
+        });
+    });
+
+</script>
+</html>

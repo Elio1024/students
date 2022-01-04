@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Classes</title>
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+    <style type="text/css">
+        table
+        {
+            border-collapse: collapse;
+            margin: 0 auto;
+            text-align: center;
+        }
+        table td, table th
+        {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+        }
+        table thead th
+        {
+            background-color: #CCE8EB;
+            width: 100px;
+        }
+        table tr:nth-child(odd)
+        {
+            background: #fff;
+        }
+        table tr:nth-child(even)
+        {
+            background: #F5FAFA;
+        }
+    </style>
+</head>
+<body>
+<form id="classes">
+    <div style="text-align:center;vertical-align:middel;">
+        班级编号<br/>
+        <input id="classesNumber" name="classesNumber"/><br/>
+        班级名字<br/>
+        <input id="classesName" name="classesName"/><br/>
+        <input id="but_submit" type="button" value="查询班级成绩信息"/><br/>
+    </div>
+</form>
+<table border="1">
+    <tr>
+        <td>班级编号</td>
+        <td>班级名称</td>
+        <td>语文平均成绩</td>
+        <td>数学平均成绩</td>
+        <td>英语平均成绩</td>
+        <td>总平均成绩</td>
+    </tr>
+    <tr>
+        <td id="tdClassNumber"></td>
+        <td id="tdClassName"></td>
+        <td id="tdAvgChinese"></td>
+        <td id="tdAvgMath"></td>
+        <td id="tdAvgEnglish"></td>
+        <td id="tdAvgSum"></td>
+    </tr>
+</table>
+</body>
+<script>
+    $(document).ready(function () {
+        $("#but_submit").click(function () {
+            let classesNumber = $('#classesNumber').val();
+            let classesName = $('#classesName').val();
+            let url = 'http://localhost:8080/classes?classesNumber=' + classesNumber + '&classesName=' + classesName;
+            let result = $.ajax({
+                url: url, async: false
+            });
+            let classes = JSON.parse(result.responseText);
+            $("#tdClassNumber").html(classes.cnumber);
+            $("#tdClassName").html(classes.cname);
+            $("#tdAvgChinese").html(classes.avgChinese);
+            $("#tdAvgMath").html(classes.avgMath);
+            $("#tdAvgEnglish").html(classes.avgEnglish);
+            $("#tdAvgSum").html(classes.avgSumScore);
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<select id="classes">
+</select>
+<select id="student">
+</select>
+<input id="minAvg" name="最小值">
+<input id="maxvg" name="最大值">
+<input id="btn_submit" type="button" value="查询">
+</body>
+<script>
+   $(document).ready(function () {
+      let result = $.ajax({
+         url: 'http://localhost:8080/allClasses', async:false
+      });
+      let classesArr = JSON.parse(result.responseText);
+      for (let i = 0; i < classesArr.length; i++) {
+          jQuery("<option value='" + classesArr[i].cid + "'>"+classesArr[i].cname+"</option>").appendTo("#classes");
+      }
+   });
+   $(document).ready(function () {
+       $('#classes').change(function () {
+           $("#student").empty();
+           let result = $.ajax({
+               url: 'http://localhost:8080/allStudent?classesId='+$("#classes").find("option:selected").val(), async: false
+           });
+           let studentArr = JSON.parse(result.responseText);
+           for(let i = 0; i < studentArr.length; i++) {
+               jQuery("<option value='" + studentArr[i].sid + "'>"+studentArr[i].sname+"</option>").appendTo("#student");
+           }
+       });
+   });
+</script>
+</html>
